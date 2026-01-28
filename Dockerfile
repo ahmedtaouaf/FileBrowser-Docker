@@ -1,10 +1,9 @@
-# Base officielle stable
+# On utilise l'image officielle
 FROM filebrowser/filebrowser:latest
 
-# On prépare un dossier unique pour tout stocker
-RUN mkdir -p /my-data
+# On ne crée pas de dossier ici pour éviter les erreurs de permission
+# Railway montera le volume directement
 
-# Commande de démarrage
-# On met la base de données ET les fichiers dans /my-data
-# Comme ça, un seul volume Railway suffit !
+# Commande de démarrage simplifiée
+# On pointe vers /my-data (le volume Railway)
 CMD ["filebrowser", "-a", "0.0.0.0", "-p", "8080", "-d", "/my-data/filebrowser.db", "--root", "/my-data/storage"]
