@@ -1,20 +1,14 @@
-FROM ubuntu:latest
+# On part d'une base légère (Alpine est plus petit qu'Ubuntu, idéal pour Railway)
+FROM filebrowser/filebrowser:latest
 
-# Éviter les questions interactives
-ENV DEBIAN_FRONTEND=noninteractive
+# On expose le port que Railway va nous donner
+ENV PORT=8080
 
-# Installation des outils de base
-RUN apt-get update && apt-get install -y \
-    curl \
-    ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+# On définit où les données seront stockées
+# /srv/ = Vos fichiers (photos, docs)
+# /database/ = Vos réglages (utilisateurs, mots de passe)
+VOLUME /srv
+VOLUME /database
 
-# Téléchargement et installation automatique de FileBrowser
-RUN curl -fsSL https://raw.githubusercontent.com/filebrowser/get/master/get.sh | bash
-
-# Création du dossier pour la base de données
-RUN mkdir -p /data
-
-# Commande de démarrage : lance FileBrowser sur le port Railway ($PORT)
-# On utilise /data/filebrowser.db pour que ce soit facile à persister via un Volume
-CMD filebrowser -d /data/filebrowser.db --address 0.0.0.0 --port $PORT --root /
+# Commande pour lancer FileBrowser sur le port dynamique de Railway
+CMD ["filebrowser", "-a", "0.0.0.0", "-p", "8080", "-d", "/database/filebrowser.db"]
