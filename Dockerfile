@@ -1,14 +1,10 @@
-# On part d'une base légère (Alpine est plus petit qu'Ubuntu, idéal pour Railway)
+# Base officielle stable
 FROM filebrowser/filebrowser:latest
 
-# On expose le port que Railway va nous donner
-ENV PORT=8080
+# On prépare un dossier unique pour tout stocker
+RUN mkdir -p /my-data
 
-# On définit où les données seront stockées
-# /srv/ = Vos fichiers (photos, docs)
-# /database/ = Vos réglages (utilisateurs, mots de passe)
-VOLUME /srv
-VOLUME /database
-
-# Commande pour lancer FileBrowser sur le port dynamique de Railway
-CMD ["filebrowser", "-a", "0.0.0.0", "-p", "8080", "-d", "/database/filebrowser.db"]
+# Commande de démarrage
+# On met la base de données ET les fichiers dans /my-data
+# Comme ça, un seul volume Railway suffit !
+CMD ["filebrowser", "-a", "0.0.0.0", "-p", "8080", "-d", "/my-data/filebrowser.db", "--root", "/my-data/storage"]
